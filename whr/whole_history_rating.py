@@ -21,6 +21,8 @@ class Base:
             self.config["w2"] = 300.0
         if self.config.get("scale") is None:
             self.config["scale"] = 13
+        if self.config.get("verbose") is None:
+            self.config["verbose"] = False
         if self.config.get("uncased") is None:
             self.config["uncased"] = False
         self.games = []
@@ -192,7 +194,7 @@ class Base:
                 return i, False
             a = b
 
-    def probability_future_match(self, name1, name2, handicap=0):
+    def probability_future_match(self, name1, name2, handicap=0, verbose=False):
         """gets the probability of winning for an hypothetical match against name1 and name2
         
         displays the probability of winning for name1 and name2 in percent rounded to the second decimal
@@ -228,9 +230,10 @@ class Base:
             wpd_elo = wpd.elo
         player1_proba = bpd_gamma / (bpd_gamma + 10 ** ((wpd_elo - handicap) /self.config["scale"]))
         player2_proba = wpd_gamma / (wpd_gamma + 10 ** ((bpd_elo + handicap) /self.config["scale"]))
-        print(
-            f"win probability: {name1}:{player1_proba:.2f}%; {name2}:{player2_proba:.2f}%"
-        )
+        if self.config["verbose"] or verbose: 
+            print(
+                f"win probability: {name1}:{player1_proba:.2f}%; {name2}:{player2_proba:.2f}%"
+            )
         return player1_proba, player2_proba
 
     def _run_one_iteration(self):
