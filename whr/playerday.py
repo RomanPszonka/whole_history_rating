@@ -3,7 +3,8 @@ import sys
 
 
 class PlayerDay:
-    def __init__(self, player, day):
+    def __init__(self, player, day, config):
+        self.scale = config["scale"]
         self.day = day
         self.player = player
         self.is_first_day = False
@@ -20,11 +21,11 @@ class PlayerDay:
 
     @property
     def elo(self):
-        return (self.r * 400) / (math.log(10))
+        return (self.r * self.scale) / (math.log(10))
 
     @elo.setter
     def elo(self, value):
-        self.r = value * (math.log(10) / 400)
+        self.r = value * (math.log(10) / self.scale)
 
     def clear_game_terms_cache(self):
         self._won_game_terms = None

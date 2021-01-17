@@ -11,7 +11,9 @@ class Player:
     def __init__(self, name, config):
         self.name = name
         self.debug = config["debug"]
-        self.w2 = (math.sqrt(config["w2"]) * math.log(10) / 400) ** 2
+        self.config = config
+        self.scale = config["scale"]
+        self.w2 = (math.sqrt(config["w2"]) * math.log(10) / self.scale) ** 2
         self.days = []
 
     def log_likelihood(self):
@@ -122,6 +124,8 @@ class Player:
 
         new_r = [ri - xi for ri, xi in zip(r, x)]
 
+        if self.debug:
+            print("r: {} sigma2: {}, g: {} new_r: {}".format(r[:2],sigma2[:2],g[:2],new_r[:2]))
         for r in new_r:
             if r > 650:
                 raise UnstableRatingException("unstable r on player")
@@ -187,7 +191,7 @@ class Player:
 
     def add_game(self, game):
         if len(self.days) == 0 or self.days[-1].day != game.day:
-            new_pday = PlayerDay(self, game.day)
+            new_pday = PlayerDay(self, game.day, self.config)
             if len(self.days) == 0:
                 new_pday.is_first_day = True
                 new_pday.set_gamma(1)

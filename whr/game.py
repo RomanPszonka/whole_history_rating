@@ -2,7 +2,7 @@ import sys
 
 
 class Game:
-    def __init__(self, black, white, winner, time_step, handicap=0, extras=None):
+    def __init__(self, black, white, winner, time_step, config, handicap=0, extras=None):
         self.day = time_step
         self.white_player = white
         self.black_player = black
@@ -11,6 +11,7 @@ class Game:
         self.handicap_proc = handicap
         self.bpd = None
         self.wpd = None
+        self.scale = config["scale"]
         if extras is None:
             self.extras = dict()
             self.extras["komi"] = 6.5
@@ -30,7 +31,7 @@ class Game:
                     f"No opponent for {player.__str__()}, since they're not in this game: {self.__str__()}."
                 )
             )
-        rval = 10 ** (opponent_elo / 400.0)
+        rval = 10 ** (opponent_elo / self.scale)
         if rval == 0 or rval > sys.maxsize:
             raise AttributeError("bad adjusted gamma")
         return rval

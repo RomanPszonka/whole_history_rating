@@ -19,6 +19,8 @@ class Base:
                 self.config["debug"] = False
         if self.config.get("w2") is None:
             self.config["w2"] = 300.0
+        if self.config.get("scale") is None:
+            self.config["scale"] = 13
         if self.config.get("uncased") is None:
             self.config["uncased"] = False
         self.games = []
@@ -106,12 +108,13 @@ class Base:
         if self.config["uncased"]:
             name = name.lower()
         player = self.player_by_name(name)
+        uncertainty_scale_factor = (100 * self.config["scale"]/400)
         if current:
             return (
                 round(player.days[-1].elo),
-                round(player.days[-1].uncertainty * 100),
+                round(player.days[-1].uncertainty * uncertainty_scale_factor),
             )
-        return [[d.day, round(d.elo), round(d.uncertainty * 100)] for d in player.days]
+        return [[d.day, round(d.elo), round(d.uncertainty * uncertainty_scale_factor)] for d in player.days]
 
     def _setup_game(self, black, white, winner, time_step, handicap, extras=None):
         if extras is None:
@@ -120,7 +123,7 @@ class Base:
             raise AttributeError("Invalid game (black player == white player)")
         white_player = self.player_by_name(white)
         black_player = self.player_by_name(black)
-        game = Game(black_player, white_player, winner, time_step, handicap, extras)
+        game = Game(black_player, white_player, winner, time_step, self.config, handicap, extras)
         return game
 
     def create_game(self, black, white, winner, time_step, handicap, extras=None):
@@ -212,9 +215,9 @@ class Base:
         player1 = self.player_by_name(name1)
         player2 = self.player_by_name(name2)
         bpd_gamma = 1
-        bpd_elo = (math.log(1) * 400) / (math.log(10))
+        bpd_elo = (math.log(1) * self.config["scale"]) / (math.log(10))
         wpd_gamma = 1
-        wpd_elo = (math.log(1) * 400) / (math.log(10))
+        wpd_elo = (math.log(1) * self.config["scale"]) / (math.log(10))
         if len(player1.days) > 0:
             bpd = player1.days[-1]
             bpd_gamma = bpd.gamma()
@@ -223,8 +226,8 @@ class Base:
             wpd = player2.days[-1]
             wpd_gamma = wpd.gamma()
             wpd_elo = wpd.elo
-        player1_proba = bpd_gamma / (bpd_gamma + 10 ** ((wpd_elo - handicap) / 400.0))
-        player2_proba = wpd_gamma / (wpd_gamma + 10 ** ((bpd_elo + handicap) / 400.0))
+        player1_proba = bpd_gamma / (bpd_gamma + 10 ** ((wpd_elo - handicap) /self.config["scale"]))
+        player2_proba = wpd_gamma / (wpd_gamma + 10 ** ((bpd_elo + handicap) /self.config["scale"]))
         print(
             f"win probability: {name1}:{player1_proba:.2f}%; {name2}:{player2_proba:.2f}%"
         )
