@@ -112,6 +112,7 @@ class Base:
         player = self.player_by_name(name)
         uncertainty_scale_factor = (100 * self.config["scale"]/400)
         if current:
+            if len(player.days) == 0: return (None,None)
             return (
                 round(player.days[-1].elo),
                 round(player.days[-1].uncertainty * uncertainty_scale_factor),
