@@ -321,7 +321,7 @@ class Base:
         Args:
             path (str): the path where to save the base
         """
-        pickle.dump([self.players, self.games, self.config["w2"]], open(path, "wb"))
+        pickle.dump([self.players, self.games, self.config], open(path, "wb"))
 
     @staticmethod
     def load_base(path):
@@ -335,5 +335,5 @@ class Base:
         """
         players, games, config = pickle.load(open(path, "rb"))
         result = Base()
-        result.config["w2"], result.games, result.players = config, games, players
+        result.config, result.games, result.players = config, games, players
         return result
