@@ -17,10 +17,12 @@ class Base:
             self.config = config
             if self.config.get("debug") is None:
                 self.config["debug"] = False
-        if self.config.get("w2") is None:
-            self.config["w2"] = 300.0
         if self.config.get("scale") is None:
             self.config["scale"] = 13
+        if self.config.get("w2") is None:
+            self.config["w2"] = (300 * self.config["scale"] ** 2)/(400 ** 2)
+        else:
+            self.config["w2"] = (self.config["w2"] * self.config["scale"] ** 2)/(400 ** 2)
         if self.config.get("verbose") is None:
             self.config["verbose"] = False
         if self.config.get("uncased") is None:
@@ -110,7 +112,7 @@ class Base:
         if self.config["uncased"]:
             name = name.lower()
         player = self.player_by_name(name)
-        uncertainty_scale_factor = (100 * self.config["scale"]/400)
+        uncertainty_scale_factor = (100 * self.config["scale"] / 400)
         if current:
             if len(player.days) == 0: return (None,None)
             return (
