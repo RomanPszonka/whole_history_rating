@@ -98,6 +98,8 @@ class Player:
         sigma2 = self.compute_sigma2()
 
         diag, sub_diag = Player.hessian(self.days, sigma2)
+
+        print("diag", diag, sub_diag)
         g = self.gradient(r, self.days, sigma2)
         n = len(r)
         a = np.zeros((n,))
@@ -105,13 +107,15 @@ class Player:
         b = np.zeros((n,))
         d[0] = diag[0]
         b[0] = sub_diag[0] if sub_diag.size > 0 else 0
-
+       
         for i in range(1, n):
             a[i] = sub_diag[i - 1] / d[i - 1]
+            print("a",i,a[i])
+            print("b",i,b[i - 1])
             d[i] = diag[i] - a[i] * b[i - 1]
             if i < n - 1:
                 b[i] = sub_diag[i]
-
+        print("d", d, sub_diag)
         y = np.zeros((n,))
         y[0] = g[0]
         for i in range(1, n):
@@ -123,7 +127,6 @@ class Player:
             x[i] = (y[i] - b[i] * x[i + 1]) / d[i]
 
         new_r = [ri - xi for ri, xi in zip(r, x)]
-
         if self.debug:
             print("r: {} sigma2: {}, g: {} new_r: {}".format(r[:2],sigma2[:2],g[:2],new_r[:2]))
         for r in new_r:
