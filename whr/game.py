@@ -2,11 +2,13 @@ import sys
 
 
 class Game:
-    def __init__(self, black, white, winner, time_step, config, handicap=0, extras=None):
+    def __init__(self, black, white, black_points, white_score, time_step, config, handicap=0, extras=None):
         self.day = time_step
         self.white_player = white
         self.black_player = black
-        self.winner = winner.upper()
+        self.black_points = black_points
+        self.white_score = white_score
+        self.mov = self.white_score - self.black_points
         self.handicap = handicap
         self.handicap_proc = handicap
         self.bpd = None
@@ -41,20 +43,25 @@ class Game:
             return self.black_player
         return self.white_player
 
+    def player_mov(self,player):
+        if player == self.white_player:
+            return self.mov
+        return -self.mov
+
     def prediction_score(self):
         if self.white_win_probability() == 0.5:
             return 0.5
         return (
             1.0
             if (
-                (self.winner == "W" and self.white_win_probability() > 0.5)
-                or (self.winner == "B" and self.white_win_probability() < 0.5)
+                (self.mov > 0 and self.white_win_probability() > 0.5)
+                or (self.mov <= 0 and self.white_win_probability() < 0.5)
             )
             else 0.0
         )
 
     def inspect(self):
-        return f"W:{self.white_player.name}(r={self.wpd.r if self.wpd is not None else '?'}) B:{self.black_player.name}(r={self.bpd.r if self.bpd is not None else '?'}) winner = {self.winner}, komi = {self.extras['komi']}, handicap = {self.handicap}"
+        return f"W:{self.white_player.name}(r={self.wpd.r if self.wpd is not None else '?'}) B:{self.black_player.name}(r={self.bpd.r if self.bpd is not None else '?'}) mov = {self.mov}, komi = {self.extras['komi']}, handicap = {self.handicap}"
 
     def white_win_probability(self):
         return self.wpd.gamma() / (

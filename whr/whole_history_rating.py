@@ -121,23 +121,24 @@ class Base:
             )
         return [[d.day, round(d.elo), round(d.uncertainty * uncertainty_scale_factor)] for d in player.days]
 
-    def _setup_game(self, black, white, winner, time_step, handicap, extras=None):
+    def _setup_game(self, black, white, black_points, white_score, time_step, handicap, extras=None):
         if extras is None:
             extras = {}
         if black == white:
             raise AttributeError("Invalid game (black player == white player)")
         white_player = self.player_by_name(white)
         black_player = self.player_by_name(black)
-        game = Game(black_player, white_player, winner, time_step, self.config, handicap, extras)
+        game = Game(black_player, white_player, black_points, white_score, time_step, self.config, handicap, extras)
         return game
 
-    def create_game(self, black, white, winner, time_step, handicap, extras=None):
+    def create_game(self, black, white, black_points, white_score, time_step, handicap, extras=None):
         """creates a new game to be added to the base
         
         Args:
             black (str): the black name
             white (str): the white name
-            winner (str): "B" if black won, "W" if white won
+            black_score (int): black points scored
+            white_score (int): white points scored
             time_step (int): the day of the match from origin
             handicap (float): the handicap (in elo)
             extras (dict, optional): extra parameters
@@ -150,7 +151,7 @@ class Base:
         if self.config["uncased"]:
             black = black.lower()
             white = white.lower()
-        game = self._setup_game(black, white, winner, time_step, handicap, extras)
+        game = self._setup_game(black, white, black_points, white_score, time_step, handicap, extras)
         return self._add_game(game)
 
     def _add_game(self, game):
