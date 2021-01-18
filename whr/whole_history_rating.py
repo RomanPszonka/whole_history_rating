@@ -18,7 +18,7 @@ class Base:
             if self.config.get("debug") is None:
                 self.config["debug"] = False
         if self.config.get("scale") is None:
-            self.config["scale"] = 13
+            self.config["scale"] = 16
         if self.config.get("w2") is None:
             self.config["w2"] = (300 * self.config["scale"] ** 2)/(400 ** 2)
         else:
