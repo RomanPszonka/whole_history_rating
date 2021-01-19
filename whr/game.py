@@ -48,10 +48,17 @@ class Game:
             return self.mov
         return -self.mov
 
+    def gamma(self, val):
+        return 10 ** (val / self.scale)
+    
+    def posterior_win_prob(self,val):
+        gval = self.gamma(val)
+        return gval / (gval + 1/gval)
+
     def player_game_gamma(self,player):
         mov = self.player_mov(player)
-        if mov > 0: return 1.0, 0.0
-        return 0.0, 1.0
+        p_win_val = self.posterior_win_prob(mov)
+        return p_win_val, 1.0-p_win_val
 
     def prediction_score(self):
         if self.white_win_probability() == 0.5:
