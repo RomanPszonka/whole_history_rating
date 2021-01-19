@@ -125,7 +125,7 @@ class Player:
         x[n - 1] = y[n - 1] / d[n - 1]
         for i in range(n - 2, -1, -1):
             x[i] = (y[i] - b[i] * x[i + 1]) / d[i]
-
+        print("x", x)
         new_r = [ri - xi for ri, xi in zip(r, x)]
         if self.debug:
             print("r: {} sigma2: {}, g: {} new_r: {}".format(r[:2],sigma2[:2],g[:2],new_r[:2]))
