@@ -37,16 +37,11 @@ class PlayerDay:
                     print(
                         f"other_gamma ({g.opponent(self.player).__str__()}) = {other_gamma}"
                     )
-                mov = g.player_mov(self.player)
-                a_gamma = 10 ** (mov / self.scale)
-                b_gamma = 10 ** (-mov / self.scale)
-                sum_gamma = a_gamma + b_gamma
-                a_gamma = a_gamma/sum_gamma
-                b_gamma = b_gamma/sum_gamma
+                a_gamma, b_gamma = g.player_game_gamma(self.player)
                 self._mov_game_terms.append([a_gamma, b_gamma, 1.0, other_gamma])
             if self.is_first_day:
                 # win against virtual player ranked with gamma = 1.0
-                self._mov_game_terms.append([0.5, 0.5, 1.0, 1.0])
+                self._mov_game_terms.append([1.0, 0.0, 1.0, 1.0])
         return self._mov_game_terms
 
     def log_likelihood_second_derivative(self):
