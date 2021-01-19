@@ -48,6 +48,11 @@ class Game:
             return self.mov
         return -self.mov
 
+    def player_game_gamma(self,player):
+        mov = self.player_mov(player)
+        if mov > 0: return 1.0, 0.0
+        return 0.0, 1.0
+
     def prediction_score(self):
         if self.white_win_probability() == 0.5:
             return 0.5
