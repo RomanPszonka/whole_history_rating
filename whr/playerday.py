@@ -41,7 +41,8 @@ class PlayerDay:
                 self._mov_game_terms.append([a_gamma, b_gamma * other_gamma, 1.0, other_gamma])
             if self.is_first_day:
                 # tie against virtual player ranked with gamma = 1.0
-                self._mov_game_terms.append([0.5, 0.5, 1.0, 1.0])
+                self._mov_game_terms.append([1.0, 0.0, 1.0, 1.0])
+                self._mov_game_terms.append([0.0, 1.0, 1.0, 1.0])
         return self._mov_game_terms
 
     def log_likelihood_second_derivative(self):
