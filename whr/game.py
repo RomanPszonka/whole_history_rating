@@ -22,6 +22,9 @@ class Game:
             if self.extras.get("komi") is None:
                 self.extras["komi"] = 6.5
 
+    def gamma(self, val):
+        return 10 ** (val / self.scale)
+
     def opponents_adjusted_gamma(self, player):
         if player == self.white_player:
             opponent_elo = self.bpd.elo + self.handicap
@@ -33,7 +36,7 @@ class Game:
                     f"No opponent for {player.__str__()}, since they're not in this game: {self.__str__()}."
                 )
             )
-        rval = 10 ** (opponent_elo / self.scale)
+        rval = self.gamma(opponent_elo)
         if rval == 0 or rval > sys.maxsize:
             raise AttributeError("bad adjusted gamma")
         return rval
@@ -47,9 +50,6 @@ class Game:
         if player == self.white_player:
             return self.mov
         return -self.mov
-
-    def gamma(self, val):
-        return 10 ** (val / self.scale)
     
     def posterior_win_prob(self,val):
         gval = self.gamma(val)
