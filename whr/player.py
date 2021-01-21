@@ -14,6 +14,8 @@ class Player:
         self.config = config
         self.scale = config["scale"]
         self.w2 = (math.sqrt(config["w2"]) * math.log(10) / self.scale) ** 2
+        self.w2_short_term = (math.sqrt(config["w2_short_term"]) * math.log(10) / self.scale) ** 2
+        self.day_delta = self.config["day_delta"]
         self.days = []
 
     def log_likelihood(self):
@@ -88,8 +90,7 @@ class Player:
         sigma2 = []
         for d1, d2 in zip(*(self.days[i:] for i in range(2))):
             delta_days = abs(d2.day - d1.day)
-            #sigma2.append(abs(d2.day - d1.day) * self.w2)
-            if delta_days < 150: sigma2.append(abs(d2.day - d1.day) * self.w2)
+            if delta_days < self.day_delta: sigma2.append(abs(d2.day - d1.day) * self.w2_short_term)
             else: sigma2.append(abs(d2.day - d1.day) * self.w2 * 2)
         return sigma2
 

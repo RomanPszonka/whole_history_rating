@@ -17,12 +17,18 @@ class Base:
             self.config = config
             if self.config.get("debug") is None:
                 self.config["debug"] = False
+        if self.config.get("day_delta") is None:
+            self.config["day_delta"] = 150
         if self.config.get("scale") is None:
             self.config["scale"] = 16
         if self.config.get("w2") is None:
             self.config["w2"] = (300 * self.config["scale"] ** 2)/(400 ** 2)
         else:
             self.config["w2"] = (self.config["w2"] * self.config["scale"] ** 2)/(400 ** 2)
+        if self.config.get("w2_short_term") is None:
+            self.config["w2_short_term"] = self.config["w2"]
+        else:
+            self.config["w2_short_term"] = (self.config["w2_short_term"] * self.config["scale"] ** 2)/(400 ** 2)
         if self.config.get("verbose") is None:
             self.config["verbose"] = False
         if self.config.get("uncased") is None:
