@@ -87,7 +87,10 @@ class Player:
     def compute_sigma2(self):
         sigma2 = []
         for d1, d2 in zip(*(self.days[i:] for i in range(2))):
-            sigma2.append(abs(d2.day - d1.day) * self.w2)
+            delta_days = abs(d2.day - d1.day)
+            #sigma2.append(abs(d2.day - d1.day) * self.w2)
+            if delta_days < 150: sigma2.append(abs(d2.day - d1.day) * self.w2)
+            else: sigma2.append(abs(d2.day - d1.day) * self.w2 * 2)
         return sigma2
 
     def update_by_ndim_newton(self):
